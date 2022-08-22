@@ -15,7 +15,7 @@ public class ProductsController : ControllerBase {
 
 	[HttpGet]
 	public async Task<IActionResult> GetAll() {
-		List<Domain.Entities.Product> x = new() {
+		List<Domain.Entities.Product> x = new()  {
 			new() {
 				Id = Guid.NewGuid(),
 				Name = "Product 1",
@@ -44,10 +44,10 @@ public class ProductsController : ControllerBase {
 
 		await _productWriteRepository.AddRangeAsync(x);
 		await _productWriteRepository.SaveAsync();
-		return Ok(await _productReadRepository.GetAll());
+		return Ok(await _productReadRepository.GetAll(false));
 	}
 
-	[HttpGet("{id}")]
+	[HttpGet("getById/{id}")]
 	public async Task<IActionResult> GetById(Guid id) {
 		return Ok(await _productReadRepository.GetByIdAsync(id));
 	}
