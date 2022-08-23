@@ -20,25 +20,19 @@ public class ProductsController : ControllerBase {
 				Id = Guid.NewGuid(),
 				Name = "Product 1",
 				Price = 100,
-				Stock = 10,
-				CreatedDate = DateTime.UtcNow,
-				UpdatedDate = DateTime.UtcNow
+				Stock = 10
 			},
 			new() {
 				Id = Guid.NewGuid(),
 				Name = "Product 2",
 				Price = 400,
-				Stock = 2,
-				CreatedDate = DateTime.UtcNow,
-				UpdatedDate = DateTime.UtcNow
+				Stock = 2
 			},
 			new() {
 				Id = Guid.NewGuid(),
 				Name = "Product 3",
 				Price = 700,
-				Stock = 18,
-				CreatedDate = DateTime.UtcNow,
-				UpdatedDate = DateTime.UtcNow
+				Stock = 18
 			},
 		};
 
