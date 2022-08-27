@@ -1,5 +1,8 @@
 ﻿using ECommerceAPI.Application.Repositories.Products;
+using ECommerceAPI.Application.ViewModels.Products;
+using ECommerceAPI.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace ECommerceAPI.API.Controllers;
 [Route("api/[controller]")]
@@ -15,34 +18,49 @@ public class ProductsController : ControllerBase {
 
 	[HttpGet]
 	public async Task<IActionResult> GetAll() {
-		List<Domain.Entities.Product> x = new()  {
-			new() {
-				Id = Guid.NewGuid(),
-				Name = "Product 1",
-				Price = 100,
-				Stock = 10
-			},
-			new() {
-				Id = Guid.NewGuid(),
-				Name = "Product 2",
-				Price = 400,
-				Stock = 2
-			},
-			new() {
-				Id = Guid.NewGuid(),
-				Name = "Product 3",
-				Price = 700,
-				Stock = 18
-			},
-		};
-
-		await _productWriteRepository.AddRangeAsync(x);
-		await _productWriteRepository.SaveAsync();
-		return Ok(await _productReadRepository.GetAll(false));
+		//var x = new List<Product>();
+		//for(int i = 1; i <= 500; i++) {
+		//	x.Add(new() {
+		//		Name = $"Product {i}",
+		//		Price = new Random().Next(i,i*500),
+		//		Stock = (Int16)(i * 500 > Int16.MaxValue ? Int16.MaxValue : i * 500)
+		//	});
+		//}
+		//await _productWriteRepository.AddRangeAsync(x);
+		//await _productWriteRepository.SaveAsync();
+		return Ok(await _productReadRepository.GetAll(tracking: false));
 	}
 
-	[HttpGet("getById/{id}")]
+	[HttpGet("getById/{id:Guid}")]
 	public async Task<IActionResult> GetById(Guid id) {
-		return Ok(await _productReadRepository.GetByIdAsync(id));
+		return Ok(await _productReadRepository.GetByIdAsync(id, tracking: false));
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> Post(ViewModel_Create_Product model) {
+		await _productWriteRepository.AddAsync(new() {
+			Name = model.Name,
+			Stock = model.Stock,
+			Price = model.Price,
+		});
+		await _productWriteRepository.SaveAsync();
+		return StatusCode(StatusCodes.Status201Created);
+	}
+
+	[HttpPut]
+	public async Task<IActionResult> Put(VievModel_Update_Product model) {
+		var product = await _productReadRepository.GetByIdAsync(model.Id);
+		product.Name = model.Name;
+		product.Stock = model.Stock;
+		product.Price = model.Price;
+		await _productWriteRepository.SaveAsync();
+		return Ok();
+	}
+
+	[HttpDelete("{id:Guid}")]
+	public async Task<IActionResult> Delete(Guid id) {
+		await _productWriteRepository.DeleteAsync(id);
+		await _productWriteRepository.SaveAsync();
+		return Ok();
 	}
 }

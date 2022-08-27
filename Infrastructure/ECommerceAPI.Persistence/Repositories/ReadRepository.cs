@@ -27,7 +27,7 @@ public class ReadRepository<TypeEntity> : IReadRepository<TypeEntity> where Type
 		return await GetByIdAsync(id, true);
 	}
 
-	public async Task<TypeEntity> GetByIdAsync(Guid id, Boolean tracking = true) {
+	public async Task<TypeEntity> GetByIdAsync(Guid id, Boolean tracking) {
 		//IQueryable da findasync metodu yoktur marker pattern ile id üzerinden işlem yapılır
 		//return await Table.FindAsync(id);
 		//return await Table.FirstOrDefaultAsync(entity => entity.Id.Equals(id));

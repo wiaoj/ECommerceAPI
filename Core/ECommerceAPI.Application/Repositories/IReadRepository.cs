@@ -13,5 +13,5 @@ public interface IReadRepository<TypeEntity> : IRepository<TypeEntity> where Typ
 	Task<TypeEntity> GetSingleAsync(Expression<Func<TypeEntity, Boolean>> expression);
 	Task<TypeEntity> GetSingleAsync(Expression<Func<TypeEntity, Boolean>> expression, Boolean tracking);
 	Task<TypeEntity> GetByIdAsync(Guid id);
-	Task<TypeEntity> GetByIdAsync(Guid id, Boolean tracking = true);
+	Task<TypeEntity> GetByIdAsync(Guid id, Boolean tracking);
 }
