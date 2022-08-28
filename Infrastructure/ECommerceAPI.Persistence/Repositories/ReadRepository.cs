@@ -13,14 +13,14 @@ public class ReadRepository<TypeEntity> : IReadRepository<TypeEntity> where Type
 	public DbSet<TypeEntity> Table => _context.Set<TypeEntity>();
 
 	public async Task<IQueryable<TypeEntity>> GetAll() {
-		return await GetAll(true);
+		return /*await*/ GetAll(true);
 	}
 
-	public async Task<IQueryable<TypeEntity>> GetAll(Boolean tracking) {
-		return await Task.Run(() => {
+	public IQueryable<TypeEntity> GetAll(Boolean tracking) {
+		//return await Task.Run(() => {
 			var query = Table.AsQueryable();
 			return tracking ? query : query.AsNoTracking();
-		});
+		//});
 	}
 
 	public async Task<TypeEntity> GetByIdAsync(Guid id) {

@@ -3,6 +3,9 @@ using ECommerceAPI.Application.ViewModels.Products;
 using ECommerceAPI.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Linq;
+using System.Linq.Expressions;
+using ECommerceAPI.Application.RequestParamaters;
 
 namespace ECommerceAPI.API.Controllers;
 [Route("api/[controller]")]
@@ -17,7 +20,7 @@ public class ProductsController : ControllerBase {
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> GetAll() {
+	public async Task<IActionResult> GetAll([FromQuery] Pagination pagination) {
 		//var x = new List<Product>();
 		//for(int i = 1; i <= 500; i++) {
 		//	x.Add(new() {
@@ -28,7 +31,20 @@ public class ProductsController : ControllerBase {
 		//}
 		//await _productWriteRepository.AddRangeAsync(x);
 		//await _productWriteRepository.SaveAsync();
-		return Ok(await _productReadRepository.GetAll(tracking: false));
+		var totalCount = _productReadRepository.GetAll(false).Count();
+		var products = _productReadRepository.GetAll(tracking: false).Select(p => new {
+			p.Id,
+			p.Name,
+			p.Stock,
+			p.Price,
+			p.CreatedDate,
+			p.UpdatedDate
+		}).Skip(pagination.Page * pagination.Size).Take(pagination.Size);
+
+		return Ok(new {
+			totalCount,
+			products
+		});
 	}
 
 	[HttpGet("getById/{id:Guid}")]
