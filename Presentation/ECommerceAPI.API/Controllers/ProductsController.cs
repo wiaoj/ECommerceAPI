@@ -48,7 +48,7 @@ public class ProductsController : ControllerBase {
 	}
 
 	[HttpPut]
-	public async Task<IActionResult> Put(VievModel_Update_Product model) {
+	public async Task<IActionResult> Put(ViewModel_Update_Product model) {
 		var product = await _productReadRepository.GetByIdAsync(model.Id);
 		product.Name = model.Name;
 		product.Stock = model.Stock;

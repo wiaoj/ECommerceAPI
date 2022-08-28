@@ -1,4 +1,7 @@
+using ECommerceAPI.Application.Validators.Products;
+using ECommerceAPI.Infrastructure.Filters;
 using ECommerceAPI.Persistence;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +15,11 @@ builder.Services.AddCors(options =>
 		)
 	);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>())
+	.AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>())
+
+	.ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true) //default asp.net filterini kapatýyor (normalde controllera gelmeden filtreyi devreye sokup iþlemi yapýp cliente geri döndürüyor)
+	;
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
