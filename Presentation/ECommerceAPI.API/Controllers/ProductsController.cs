@@ -6,6 +6,7 @@ using System.Net;
 using System.Linq;
 using System.Linq.Expressions;
 using ECommerceAPI.Application.RequestParamaters;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ECommerceAPI.API.Controllers;
 [Route("api/[controller]")]
@@ -13,10 +14,12 @@ namespace ECommerceAPI.API.Controllers;
 public class ProductsController : ControllerBase {
 	private readonly IProductWriteRepository _productWriteRepository;
 	private readonly IProductReadRepository _productReadRepository;
+	private readonly IWebHostEnvironment _webHostEnvironment;
 
-	public ProductsController(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository) {
+	public ProductsController(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, IWebHostEnvironment webHostEnvironment) {
 		this._productWriteRepository = productWriteRepository;
 		this._productReadRepository = productReadRepository;
+		this._webHostEnvironment = webHostEnvironment;
 	}
 
 	[HttpGet]
@@ -77,6 +80,26 @@ public class ProductsController : ControllerBase {
 	public async Task<IActionResult> Delete(Guid id) {
 		await _productWriteRepository.DeleteAsync(id);
 		await _productWriteRepository.SaveAsync();
+		return Ok();
+	}
+
+	[HttpPost("[action]")]
+	public async Task<IActionResult> Upload() {
+		String uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "resource/product-images");
+
+		Random r = new();
+		foreach(IFormFile file in Request.Form.Files) {
+			string fullPath = Path.Combine(uploadPath, $"{r.Next()}{Path.GetExtension(file.Name)}");
+
+			if(Directory.Exists(uploadPath) is false) {
+				Directory.CreateDirectory(uploadPath);
+			}
+
+			using FileStream fileStream = new(fullPath, FileMode.Create,FileAccess.Write,FileShare.None, (1024 * 1024), useAsync:false);
+
+			await file.CopyToAsync(fileStream);
+            await fileStream.FlushAsync();
+		}
 		return Ok();
 	}
 }
