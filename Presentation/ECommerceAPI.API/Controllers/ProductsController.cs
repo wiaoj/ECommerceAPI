@@ -7,7 +7,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using ECommerceAPI.Application.RequestParamaters;
 using System.Diagnostics.CodeAnalysis;
-using ECommerceAPI.Application.Services;
+using ECommerceAPI.Application.Abstractions.Storage;
+using ECommerceAPI.Application.Repositories.FileRepositories.ProductImageFiles;
 
 namespace ECommerceAPI.API.Controllers;
 [Route("api/[controller]")]
@@ -15,12 +16,14 @@ namespace ECommerceAPI.API.Controllers;
 public class ProductsController : ControllerBase {
 	private readonly IProductWriteRepository _productWriteRepository;
 	private readonly IProductReadRepository _productReadRepository;
-	private readonly IFileService _fileService;
+	private readonly IStorageService _storageService;
+	private readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
 
-	public ProductsController(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, IFileService fileService) {
+	public ProductsController(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, IStorageService storageService, IProductImageFileWriteRepository productImageFileWriteRepository) {
 		this._productWriteRepository = productWriteRepository;
 		this._productReadRepository = productReadRepository;
-		this._fileService = fileService;
+		this._storageService = storageService;
+		this._productImageFileWriteRepository = productImageFileWriteRepository;
 	}
 
 	[HttpGet]
@@ -86,8 +89,13 @@ public class ProductsController : ControllerBase {
 
 	[HttpPost("[action]")]
 	public async Task<IActionResult> Upload() {
-		await _fileService.UploadAsync("resource/product-images", Request.Form.Files);
-
-        return Ok();
+        var datas = await _storageService.UploadAsync("resource/product-images", Request.Form.Files);
+		var result = await _productImageFileWriteRepository.AddRangeAsync(datas.Select(data => new Domain.Entities.Files.ProductImageFile() {
+			FileName = data.fileName,
+			Path = data.pathOrContainer,
+			Storage = _storageService.StorageName
+		}).ToList());
+		await _productImageFileWriteRepository.SaveAsync();
+        return Ok(result);
 	}
 }
