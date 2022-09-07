@@ -84,7 +84,7 @@ public class ProductsController : ControllerBase {
 	public async Task<IActionResult> Delete(Guid id) {
 		await _productWriteRepository.DeleteAsync(id);
 		await _productWriteRepository.SaveAsync();
-		return Ok();
+		return Ok ();
 	}
 
 	[HttpPost("[action]")]
