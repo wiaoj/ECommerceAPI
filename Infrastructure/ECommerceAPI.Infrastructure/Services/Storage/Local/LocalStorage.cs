@@ -5,7 +5,7 @@ using Microsoft.Extensions.FileSystemGlobbing.Internal;
 using System.IO;
 
 namespace ECommerceAPI.Infrastructure.Services.Storage.Local;
-public class LocalStorage : ILocalStorage {
+public class LocalStorage : Storage, ILocalStorage {
     private readonly IWebHostEnvironment _webHostEnvironment;
     public LocalStorage(IWebHostEnvironment webHostEnvironment) {
         _webHostEnvironment = webHostEnvironment;
@@ -32,10 +32,11 @@ public class LocalStorage : ILocalStorage {
 
         List<(String fileName, String path)> datas = new();
         foreach(IFormFile file in files) {
-            //String fileNewName = await FileRenameAsync(uploadPath, file.FileName);
 
-            Boolean result = await CopyFileAsync($"{uploadPath}\\{file.Name}", file);
-            datas.Add((file.Name, $@"{pathOrContainerName}\{file.Name}"));
+            String newFileName = await FileRenameAsync(pathOrContainerName, file.Name, HasFile);
+
+            Boolean result = await CopyFileAsync($"{uploadPath}\\{newFileName}", file);
+            datas.Add((newFileName, $@"{pathOrContainerName}\{newFileName}"));
         }
 
         return datas;

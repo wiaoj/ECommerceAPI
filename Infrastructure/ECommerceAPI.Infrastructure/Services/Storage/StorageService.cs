@@ -12,7 +12,7 @@ internal class StorageService : IStorageService {
     public String StorageName { get => _storage.GetType().Name; }
 
     public async Task DeleteAsync(String pathOrContainerName, String fileName) {
-        await _storage.DeleteAsync(pathOrContainerName,fileName);
+        await _storage.DeleteAsync(pathOrContainerName, fileName);
     }
 
     public List<String> GetFiles(String pathOrContainerName) {
