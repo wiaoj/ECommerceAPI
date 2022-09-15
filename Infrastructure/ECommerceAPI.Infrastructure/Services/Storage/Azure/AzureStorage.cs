@@ -40,7 +40,7 @@ public class AzureStorage : Storage, IAzureStorage {
             String newFileName = await FileRenameAsync(pathOrContainerName, file.Name, HasFile);
             BlobClient blobClient = _blobContainerClient.GetBlobClient(newFileName);
             await blobClient.UploadAsync(file.OpenReadStream());
-            datas.Add((newFileName, pathOrContainerName));
+            datas.Add((newFileName, $"{pathOrContainerName}/{newFileName}"));
         }
 
         return datas;
