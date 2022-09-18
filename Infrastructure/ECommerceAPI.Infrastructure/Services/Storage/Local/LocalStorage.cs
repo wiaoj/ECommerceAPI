@@ -33,7 +33,7 @@ public class LocalStorage : Storage, ILocalStorage {
         List<(String fileName, String path)> datas = new();
         foreach(IFormFile file in files) {
 
-            String newFileName = await FileRenameAsync(pathOrContainerName, file.Name, HasFile);
+            String newFileName = await FileRenameAsync(pathOrContainerName, file.FileName, HasFile);
 
             Boolean result = await CopyFileAsync($"{uploadPath}\\{newFileName}", file);
             datas.Add((newFileName, $@"{pathOrContainerName}\{newFileName}"));

@@ -3,5 +3,5 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceAPI.Application.Repositories;
 public interface IRepository<TypeEntity> where TypeEntity : class, IBaseEntity, new() {
-	DbSet<TypeEntity> Table { get; }
+    DbSet<TypeEntity> Table { get; }
 }
