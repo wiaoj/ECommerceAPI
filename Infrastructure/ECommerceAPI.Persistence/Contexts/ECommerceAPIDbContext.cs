@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using File = ECommerceAPI.Domain.Entities.Files.File;
 
 namespace ECommerceAPI.Persistence.Contexts;
-public class ECommerceAPIDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid> {
+public class ECommerceAPIDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, String> {
 	public ECommerceAPIDbContext(DbContextOptions options) : base(options) { }
 
 

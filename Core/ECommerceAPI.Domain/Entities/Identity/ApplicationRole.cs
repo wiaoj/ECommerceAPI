@@ -2,4 +2,4 @@
 
 namespace ECommerceAPI.Domain.Entities.Identity;
 
-public class ApplicationRole : IdentityRole<Guid> { }
+public class ApplicationRole : IdentityRole<String> { }

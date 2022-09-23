@@ -14,6 +14,7 @@ public class CreateUserCommandRequestHandler : IRequestHandler<CreateUserCommand
 
     public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken) {
         IdentityResult result = await _userManager.CreateAsync(new() {
+            Id = Guid.NewGuid().ToString(),
             NameSurname = request.NameSurname,
             UserName = request.UserName,
             Email = request.Email,
