@@ -3,10 +3,10 @@ using MediatR;
 
 namespace ECommerceAPI.Application.Features.Commands.Products.DeleteProduct;
 
-public class DeleteProductCommandRequestHandler : IRequestHandler<DeleteProductCommandRequest, DeleteProductCommandResponse> {
+public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommandRequest, DeleteProductCommandResponse> {
     private readonly IProductWriteRepository _productWriteRepository;
 
-    public DeleteProductCommandRequestHandler(IProductWriteRepository productWriteRepository) {
+    public DeleteProductCommandHandler(IProductWriteRepository productWriteRepository) {
         _productWriteRepository = productWriteRepository;
     }
 

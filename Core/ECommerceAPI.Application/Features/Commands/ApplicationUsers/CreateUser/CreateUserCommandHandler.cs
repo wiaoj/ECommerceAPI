@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ECommerceAPI.Application.Features.Commands.ApplicationUsers.CreateUser;
 
-public class CreateUserCommandRequestHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse> {
+public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse> {
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public CreateUserCommandRequestHandler(UserManager<ApplicationUser> userManager) {
+    public CreateUserCommandHandler(UserManager<ApplicationUser> userManager) {
         _userManager = userManager;
     }
 

@@ -4,11 +4,11 @@ using MediatR;
 
 namespace ECommerceAPI.Application.Features.Commands.Products.UpdateProduct;
 
-public class UpdateProductCommandRequestHandler : IRequestHandler<UpdateProductCommandRequest, UpdateProductCommandResponse> {
+public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommandRequest, UpdateProductCommandResponse> {
     private readonly IProductReadRepository _productReadRepository;
     private readonly IProductWriteRepository _productWriteRepository;
 
-    public UpdateProductCommandRequestHandler(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository) {
+    public UpdateProductCommandHandler(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository) {
         _productReadRepository = productReadRepository;
         _productWriteRepository = productWriteRepository;
     }

@@ -3,10 +3,10 @@ using MediatR;
 
 namespace ECommerceAPI.Application.Features.Commands.Products.CreateProduct;
 
-public class CreateProductCommandRequestHandler : IRequestHandler<CreateProductCommandRequest, CreateProductCommandResponse> {
+public class CreateProductCommandHandler : IRequestHandler<CreateProductCommandRequest, CreateProductCommandResponse> {
     private readonly IProductWriteRepository _productWriteRepository;
 
-    public CreateProductCommandRequestHandler(IProductWriteRepository productWriteRepository) {
+    public CreateProductCommandHandler(IProductWriteRepository productWriteRepository) {
         _productWriteRepository = productWriteRepository;
     }
 
