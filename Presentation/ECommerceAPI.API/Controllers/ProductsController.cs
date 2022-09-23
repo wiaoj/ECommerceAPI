@@ -1,21 +1,16 @@
-﻿using ECommerceAPI.Application.Repositories.Products;
-using ECommerceAPI.Application.ViewModels.Products;
-using ECommerceAPI.Domain.Entities;
-using Microsoft.AspNetCore.Mvc;
-using ECommerceAPI.Application.RequestParamaters;
-using ECommerceAPI.Application.Abstractions.Storage;
-using ECommerceAPI.Application.Repositories.FileRepositories.ProductImageFiles;
-using Microsoft.EntityFrameworkCore;
-using ECommerceAPI.Domain.Entities.Files;
-using MediatR;
+﻿using ECommerceAPI.Application.Abstractions.Storage;
+using ECommerceAPI.Application.Features.Commands.ProductImageFiles.DeleteProductImage;
+using ECommerceAPI.Application.Features.Commands.ProductImageFiles.UploadProductImage;
 using ECommerceAPI.Application.Features.Commands.Products.CreateProduct;
+using ECommerceAPI.Application.Features.Commands.Products.DeleteProduct;
+using ECommerceAPI.Application.Features.Commands.Products.UpdateProduct;
+using ECommerceAPI.Application.Features.Queries.ProductImageFiles.GetProductImages;
 using ECommerceAPI.Application.Features.Queries.Products.GetAllProduct;
 using ECommerceAPI.Application.Features.Queries.Products.GetByIdProduct;
-using ECommerceAPI.Application.Features.Commands.Products.UpdateProduct;
-using ECommerceAPI.Application.Features.Commands.Products.DeleteProduct;
-using ECommerceAPI.Application.Features.Commands.ProductImageFiles.UploadProductImage;
-using ECommerceAPI.Application.Features.Commands.ProductImageFiles.DeleteProductImage;
-using ECommerceAPI.Application.Features.Queries.ProductImageFiles.GetProductImages;
+using ECommerceAPI.Application.Repositories.FileRepositories.ProductImageFiles;
+using ECommerceAPI.Application.Repositories.Products;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceAPI.API.Controllers;
 [Route("api/[controller]")]
@@ -33,12 +28,12 @@ public class ProductsController : ControllerBase {
     private readonly IMediator _mediator;
 
     public ProductsController(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, IStorageService storageService, IProductImageFileWriteRepository productImageFileWriteRepository, IConfiguration configuration, IMediator mediator) {
-        this._productWriteRepository = productWriteRepository;
-        this._productReadRepository = productReadRepository;
-        this._storageService = storageService;
-        this._productImageFileWriteRepository = productImageFileWriteRepository;
-        this._configuration = configuration;
-        this._mediator = mediator;
+        _productWriteRepository = productWriteRepository;
+        _productReadRepository = productReadRepository;
+        _storageService = storageService;
+        _productImageFileWriteRepository = productImageFileWriteRepository;
+        _configuration = configuration;
+        _mediator = mediator;
     }
 
     [HttpGet]

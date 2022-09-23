@@ -1,17 +1,20 @@
 ﻿using ECommerceAPI.Domain.Entities;
 using ECommerceAPI.Domain.Entities.Common;
 using ECommerceAPI.Domain.Entities.Files;
+using ECommerceAPI.Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using File = ECommerceAPI.Domain.Entities.Files.File;
 
 namespace ECommerceAPI.Persistence.Contexts;
-public class ECommerceAPIDbContext : DbContext {
+public class ECommerceAPIDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid> {
 	public ECommerceAPIDbContext(DbContextOptions options) : base(options) { }
 
 
 	public DbSet<Product> Products { get; set; }
 	public DbSet<Order> Orders { get; set; }
 	public DbSet<Customer> Customers { get; set; }
-	public DbSet<Domain.Entities.Files.File> Files { get; set; }
+	public DbSet<File> Files { get; set; }
 	public DbSet<ProductImageFile> ProductImageFiles { get; set; }
 	public DbSet<InvoiceFile> InvoiceFiles { get; set; }
 
