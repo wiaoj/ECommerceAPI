@@ -10,11 +10,13 @@ using ECommerceAPI.Application.Features.Queries.Products.GetByIdProduct;
 using ECommerceAPI.Application.Repositories.FileRepositories.ProductImageFiles;
 using ECommerceAPI.Application.Repositories.Products;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceAPI.API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(AuthenticationSchemes = "Admin")]
 public class ProductsController : ControllerBase {
     private readonly IProductWriteRepository _productWriteRepository;
     private readonly IProductReadRepository _productReadRepository;
