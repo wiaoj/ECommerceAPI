@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Features.Commands.ApplicationUsers.CreateUser;
+using ECommerceAPI.Application.Features.Commands.ApplicationUsers.FacebookLogin;
 using ECommerceAPI.Application.Features.Commands.ApplicationUsers.GoogleLogin;
 using ECommerceAPI.Application.Features.Commands.ApplicationUsers.LoginUser;
 using MediatR;
@@ -29,6 +30,12 @@ public class UsersController : ControllerBase {
     [HttpPost("google-login")]
     public async Task<IActionResult> GoogleLogin(GoogleLoginCommandRequest googleLoginCommandRequest) {
         GoogleLoginCommandResponse response = await _mediator.Send(googleLoginCommandRequest);
+        return Ok(response);
+    }
+
+    [HttpPost("facebook-login")]
+    public async Task<IActionResult> FacebookLogin(FacebookLoginCommandRequest facebookLoginCommandRequest) {
+        FacebookLoginCommandResponse response = await _mediator.Send(facebookLoginCommandRequest);
         return Ok(response);
     }
 }
