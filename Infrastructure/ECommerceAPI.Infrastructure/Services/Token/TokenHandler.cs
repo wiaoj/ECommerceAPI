@@ -1,8 +1,10 @@
 ﻿using ECommerceAPI.Application.Abstractions.Token;
+using ECommerceAPI.Domain.Entities.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -15,11 +17,11 @@ public class TokenHandler : ITokenHandler {
     }
 
 
-    public Application.DTOs.Token CreateAccessToken() {
-        return CreateAccessToken(Convert.ToInt32(_configuration["Token:ExpirationSeconds"]));
+    public Application.DTOs.Token CreateAccessToken(ApplicationUser applicationUser) {
+        return CreateAccessToken(applicationUser, Convert.ToInt32(_configuration["Token:ExpirationSeconds"]));
     }
 
-    public Application.DTOs.Token CreateAccessToken(Int32 accessTokenLifeTime) {
+    public Application.DTOs.Token CreateAccessToken(ApplicationUser applicationUser, Int32 accessTokenLifeTime) {
         Application.DTOs.Token token = new();
 
         // SecurityKey 'in simetriğini alıyoruz
@@ -36,7 +38,10 @@ public class TokenHandler : ITokenHandler {
             issuer: _configuration["Token:Issuer"],
             expires: token.Expiration,
             notBefore: DateTime.UtcNow, // Token üretilir üretilmez devreye giriyor
-            signingCredentials: signingCredentials
+            signingCredentials: signingCredentials,
+            claims: new List<Claim> {
+                new(ClaimTypes.Name, applicationUser.UserName)
+            }
             );
 
         // Token oluşturucu sınıfından bir örnek alıyoruz
