@@ -24,9 +24,6 @@ public class ProductsController : ControllerBase {
     private readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
     private readonly IConfiguration _configuration;
 
-
-
-
     private readonly IMediator _mediator;
 
     public ProductsController(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, IStorageService storageService, IProductImageFileWriteRepository productImageFileWriteRepository, IConfiguration configuration, IMediator mediator) {
