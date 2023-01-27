@@ -15,13 +15,15 @@ public class GetAllProductQueryHandler : IRequestHandler<GetAllProductQueryReque
         var totalProductCount = _productReadRepository.GetAll(tracking: false).Count();
         var products = await _productReadRepository.GetAll(tracking: false)
             .Skip(request.Page * request.Size).Take(request.Size)
+            .Include(x => x.ProductImageFiles)
             .Select(p => new {
                 p.Id,
                 p.Name,
                 p.Stock,
                 p.Price,
                 p.CreatedDate,
-                p.UpdatedDate
+                p.UpdatedDate,
+                p.ProductImageFiles
             }).ToListAsync(cancellationToken: cancellationToken);
 
         return new() {

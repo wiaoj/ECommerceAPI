@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.Application.Abstractions.Storage;
+using ECommerceAPI.Application.Features.Commands.ProductImageFiles.ChangeImageShowcase;
 using ECommerceAPI.Application.Features.Commands.ProductImageFiles.DeleteProductImage;
 using ECommerceAPI.Application.Features.Commands.ProductImageFiles.UploadProductImage;
 using ECommerceAPI.Application.Features.Commands.Products.CreateProduct;
@@ -46,6 +47,7 @@ public class ProductsController : ControllerBase {
         return Ok(response);
     }
 
+    
     [HttpPost]
     [Authorize(AuthenticationSchemes = "Admin")]
     public async Task<IActionResult> Post(CreateProductCommandRequest createProductCommandRequest) {
@@ -75,7 +77,7 @@ public class ProductsController : ControllerBase {
         return Ok(response);
     }
 
-    [HttpDelete("[action]/{Id}")]
+    [HttpDelete("[action]/{Id:Guid}")]
     [Authorize(AuthenticationSchemes = "Admin")]
     public async Task<IActionResult> DeleteProductImage([FromRoute] DeleteProductImageCommandRequest deleteProductImageCommandRequest, [FromQuery] Guid imageId) {
         deleteProductImageCommandRequest.ImageId = imageId;
@@ -83,10 +85,19 @@ public class ProductsController : ControllerBase {
         return Ok(response);
     }
 
-    [HttpGet("[action]/{Id}")]
+    [HttpGet("[action]/{Id:Guid}")]
     [Authorize(AuthenticationSchemes = "Admin")]
     public async Task<IActionResult> GetProductImages([FromRoute] GetProductImagesQueryRequest getProductImagesQueryRequest) {
         List<GetProductImagesQueryResponse>? response = await _mediator.Send(getProductImagesQueryRequest);
+        return Ok(response);
+    }
+
+    //[HttpGet("[action]/{imageId:Guid}/{productId:Guid}")]
+    [HttpGet("[action]")]
+    [Authorize(AuthenticationSchemes = "Admin")]
+    public async Task<IActionResult> ChangeImageShowcase([FromQuery] ChangeImageShowcaseCommandRequest changeImageShowcaseCommandRequest) {
+        ChangeImageShowcaseCommandResponse response = await _mediator.Send(changeImageShowcaseCommandRequest);
+        
         return Ok(response);
     }
 }

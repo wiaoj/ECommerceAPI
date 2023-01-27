@@ -1,0 +1,20 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ECommerceAPI.API.Controllers;
+[Route("api/[controller]")]
+[ApiController]
+public class FilesController : ControllerBase {
+    private readonly IConfiguration _configuration;
+
+    public FilesController(IConfiguration configuration) {
+        _configuration = configuration;
+    }
+
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetStorageBaseUrl() {
+        return Ok(new {
+            Url = _configuration["Storage:BaseUrl"]
+        });
+    }
+}
