@@ -58,7 +58,7 @@ public class AuthService : IAuthService {
             await _userManager.AddLoginAsync(user, info); // ilgili tabloya geldiği dış kaynak özellikleri ile kaydediyoruz
 
             Token token = _tokenHandler.CreateAccessToken(user);
-            await _userService.UpdateRefreshToken(user, token.RefreshToken, token.Expiration, 60 * 60);
+            await _userService.UpdateRefreshToken(user, token.RefreshToken, token.Expiration, 300);
             return token;
         }
 
@@ -115,7 +115,7 @@ public class AuthService : IAuthService {
 
         if(result.Succeeded) { //Authentication başarılı olmuş oluyor
             Token token = _tokenHandler.CreateAccessToken(user);
-            await _userService.UpdateRefreshToken(user, token.RefreshToken, token.Expiration, 15);
+            await _userService.UpdateRefreshToken(user, token.RefreshToken, token.Expiration, 300);
             return token;
         }
 
@@ -130,7 +130,7 @@ public class AuthService : IAuthService {
 
         if(user is not null && user.RefreshTokenEndDate > DateTime.UtcNow) {
             Token token = _tokenHandler.CreateAccessToken(user);
-            await _userService.UpdateRefreshToken(user, token.RefreshToken, token.Expiration, 60 * 60);
+            await _userService.UpdateRefreshToken(user, token.RefreshToken, token.Expiration, 300);
             return token;
         }
 

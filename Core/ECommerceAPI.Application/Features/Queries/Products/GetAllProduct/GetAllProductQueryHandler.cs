@@ -12,7 +12,7 @@ public class GetAllProductQueryHandler : IRequestHandler<GetAllProductQueryReque
     }
 
     public async Task<GetAllProductQueryResponse> Handle(GetAllProductQueryRequest request, CancellationToken cancellationToken) {
-        var totalCount = _productReadRepository.GetAll(tracking: false).Count();
+        var totalProductCount = _productReadRepository.GetAll(tracking: false).Count();
         var products = await _productReadRepository.GetAll(tracking: false)
             .Skip(request.Page * request.Size).Take(request.Size)
             .Select(p => new {
@@ -26,7 +26,7 @@ public class GetAllProductQueryHandler : IRequestHandler<GetAllProductQueryReque
 
         return new() {
             Products = products,
-            TotalCount = totalCount
+            TotalProductCount = totalProductCount
         };
     }
 }

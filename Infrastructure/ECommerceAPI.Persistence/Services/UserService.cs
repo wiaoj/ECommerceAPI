@@ -1,9 +1,7 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
 using ECommerceAPI.Application.DTOs.User;
 using ECommerceAPI.Application.Exceptions;
-using ECommerceAPI.Application.Features.Commands.ApplicationUsers.CreateUser;
 using ECommerceAPI.Domain.Entities.Identity;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace ECommerceAPI.Persistence.Services;
