@@ -1,12 +1,15 @@
 using ECommerceAPI.API.Configurations.ColumnWriters;
+using ECommerceAPI.API.Extensions;
 using ECommerceAPI.Application;
 using ECommerceAPI.Application.Validators.Products;
 using ECommerceAPI.Infrastructure;
 using ECommerceAPI.Infrastructure.Filters;
-using ECommerceAPI.Infrastructure.Services.Storage.Local;
 using ECommerceAPI.Persistence;
+using ECommerceAPI.SignalR;
+using ECommerceAPI.SignalR.Hubs;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -21,6 +24,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
+builder.Services.AddSignalRServices();
 
 //builder.Services.AddStorage(StorageType.Local);
 //builder.Services.AddStorage<LocalStorage>();
@@ -29,7 +33,9 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     //her önüne gelen girebilir... policy.AllowAnyHeader().AllowAnyHeader().AllowAnyOrigin()
     policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
-            .AllowAnyHeader().AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials() // SignalR için 
         )
     );
 
@@ -104,7 +110,7 @@ if(app.Environment.IsDevelopment()) {
     app.UseSwaggerUI();
 }
 
-
+app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<Program>>());
 
 app.UseStaticFiles();
 
@@ -129,5 +135,6 @@ app.Use(async (context, next) => {
 });
 
 app.MapControllers();
+app.MapHubs();
 
 app.Run();

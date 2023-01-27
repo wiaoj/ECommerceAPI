@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECommerceAPI.API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(AuthenticationSchemes = "Admin")]
 public class ProductsController : ControllerBase {
     private readonly IProductWriteRepository _productWriteRepository;
     private readonly IProductReadRepository _productReadRepository;
@@ -48,24 +47,28 @@ public class ProductsController : ControllerBase {
     }
 
     [HttpPost]
+    [Authorize(AuthenticationSchemes = "Admin")]
     public async Task<IActionResult> Post(CreateProductCommandRequest createProductCommandRequest) {
         CreateProductCommandResponse response = await _mediator.Send(createProductCommandRequest);
         return StatusCode(StatusCodes.Status201Created/*, response*/);
     }
 
     [HttpPut]
+    [Authorize(AuthenticationSchemes = "Admin")]
     public async Task<IActionResult> Put([FromBody] UpdateProductCommandRequest updateProductCommandRequest) {
         UpdateProductCommandResponse response = await _mediator.Send(updateProductCommandRequest);
         return Ok(response);
     }
 
     [HttpDelete("{Id:Guid}")]
+    [Authorize(AuthenticationSchemes = "Admin")]
     public async Task<IActionResult> Delete([FromRoute] DeleteProductCommandRequest deleteProductCommandRequest) {
         DeleteProductCommandResponse response = await _mediator.Send(deleteProductCommandRequest);
         return Ok(response);
     }
 
     [HttpPost("[action]")]
+    [Authorize(AuthenticationSchemes = "Admin")]
     public async Task<IActionResult> Upload([FromQuery] UploadProductImageCommandRequest uploadProductImageCommandRequest) {
         uploadProductImageCommandRequest.FormFiles = Request.Form.Files;
         UploadProductImageCommandResponse response = await _mediator.Send(uploadProductImageCommandRequest);
@@ -73,6 +76,7 @@ public class ProductsController : ControllerBase {
     }
 
     [HttpDelete("[action]/{Id}")]
+    [Authorize(AuthenticationSchemes = "Admin")]
     public async Task<IActionResult> DeleteProductImage([FromRoute] DeleteProductImageCommandRequest deleteProductImageCommandRequest, [FromQuery] Guid imageId) {
         deleteProductImageCommandRequest.ImageId = imageId;
         DeleteProductImageCommandResponse response = await _mediator.Send(deleteProductImageCommandRequest);
@@ -80,6 +84,7 @@ public class ProductsController : ControllerBase {
     }
 
     [HttpGet("[action]/{Id}")]
+    [Authorize(AuthenticationSchemes = "Admin")]
     public async Task<IActionResult> GetProductImages([FromRoute] GetProductImagesQueryRequest getProductImagesQueryRequest) {
         List<GetProductImagesQueryResponse>? response = await _mediator.Send(getProductImagesQueryRequest);
         return Ok(response);
