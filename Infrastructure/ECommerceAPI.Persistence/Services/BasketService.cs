@@ -68,7 +68,7 @@ public class BasketService : IBasketService {
         }
 
 
-        return targetBasket;
+        return targetBasket!;
     }
 
     public async Task AddItemToBasketAsync(VievModel_Create_BasketItem basketItem) {
@@ -88,9 +88,10 @@ public class BasketService : IBasketService {
                     ProductId = basketItem.ProductId,
                     Quantity = basketItem.Quantity,
                 });
-            }
 
+            }
             await _basketItemWriteRepository.SaveAsync();
+
         }
     }
 
@@ -100,7 +101,7 @@ public class BasketService : IBasketService {
         Basket? basketResult = await _basketReadRepository.Table
             .Include(x => x.BasketItems)
             .ThenInclude(basketItem => basketItem.Product)
-            .FirstOrDefaultAsync(basket => basket.Id.Equals(basket.Id));
+            .FirstOrDefaultAsync(x => x.Id.Equals(basket.Id));
 
         return basketResult.BasketItems.ToList();
     }
@@ -117,6 +118,11 @@ public class BasketService : IBasketService {
             _basketItem.Quantity = basketItem.Quantity;
             //await _basketItemWriteRepository.UpdateAsync(_basketItem);
             await _basketItemWriteRepository.SaveAsync();
+        }
+    }
+    public Basket GetUserActiveBasketAsync {
+        get {
+            return ContextUser().Result;
         }
     }
 }

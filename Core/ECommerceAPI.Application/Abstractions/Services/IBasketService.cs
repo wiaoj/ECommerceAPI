@@ -7,4 +7,5 @@ public interface IBasketService {
     public Task AddItemToBasketAsync(VievModel_Create_BasketItem basketItem);
     public Task UpdateQuantityAsync(VievModel_Update_BasketItem basketItem);
     public Task RemoveBasketItemAsync(Guid basketItemId);
+    public Basket GetUserActiveBasketAsync { get; }
 }
