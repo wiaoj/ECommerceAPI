@@ -24,6 +24,11 @@ public class ECommerceAPIDbContext : IdentityDbContext<ApplicationUser, Applicat
     protected override void OnModelCreating(ModelBuilder builder) {
         builder.Entity<Order>().HasKey(x => x.Id);
 
+        builder.Entity<Order>()
+            .HasIndex(x => x.OrderCode)
+            .IsUnique();
+
+
         builder.Entity<Basket>()
             .HasOne(x => x.Order)
             .WithOne(x => x.Basket)
