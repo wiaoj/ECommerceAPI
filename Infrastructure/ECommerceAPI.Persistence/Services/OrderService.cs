@@ -49,11 +49,32 @@ public class OrderService : IOrderService {
         return new() {
             TotalOrderCount = await query.CountAsync(),
             Orders = await data.Select(order => new {
+                Id = order.Id,
                 OrderCode = order.OrderCode,
                 UserName = order.Basket.ApplicationUser.UserName,
                 TotalPrice = order.Basket.BasketItems.Sum(basketItem => basketItem.Product.Price * basketItem.Quantity),
                 CreatedDate = order.CreatedDate
             }).ToListAsync()
+        };
+    }
+
+    public async Task<SingleOrder> GetByIdOrderAsync(Guid id) {
+        var data = await _orderReadRepository.Table
+            .Include(order => order.Basket)
+                .ThenInclude(basket => basket.BasketItems)
+                    .ThenInclude(basketItem => basketItem.Product)
+                    .FirstOrDefaultAsync(x => x.Id.Equals(id));
+        return new() {
+            Id = data.Id,
+            OrderCode = data.OrderCode,
+            Address = data.Address,
+            Description = data.Description,
+            CreatedDate = data.CreatedDate,
+            BasketItems = data.Basket.BasketItems.Select(basketItem => new {
+                basketItem.Product.Name,
+                basketItem.Product.Price,
+                basketItem.Quantity
+            })
         };
     }
 
