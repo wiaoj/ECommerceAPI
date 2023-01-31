@@ -19,6 +19,7 @@ using ECommerceAPI.Persistence.Repositories.FileRepositories.ProductImageFiles;
 using ECommerceAPI.Persistence.Repositories.Orders;
 using ECommerceAPI.Persistence.Repositories.Products;
 using ECommerceAPI.Persistence.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -33,7 +34,8 @@ public static class ServiceRegistration {
             options.Password.RequireDigit = false;
             options.Password.RequireLowercase = false;
             options.Password.RequireUppercase = false;
-        }).AddEntityFrameworkStores<ECommerceAPIDbContext>();
+        }).AddEntityFrameworkStores<ECommerceAPIDbContext>()
+        .AddDefaultTokenProviders(); //identity üzerinden generate password metodunu kullanmak için ekliyoruz
 
         services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
         services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();

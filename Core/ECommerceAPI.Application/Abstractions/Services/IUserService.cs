@@ -4,5 +4,6 @@ using ECommerceAPI.Domain.Entities.Identity;
 namespace ECommerceAPI.Application.Abstractions.Services;
 public interface IUserService {
     Task<CreateUserResponse> CreateAsync(CreateUser model);
-    Task UpdateRefreshToken(ApplicationUser user, String refreshToken, DateTime accessTokenDate, Int32 addOnAccessTokenDate);
+    Task UpdateRefreshTokenAsync(ApplicationUser user, String refreshToken, DateTime accessTokenDate, Int32 addOnAccessTokenDate);
+    Task UpdatePasswordAsync(String userId, String resetToken, String newPassword);
 }

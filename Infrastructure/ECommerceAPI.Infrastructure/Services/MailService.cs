@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Mail;
+using System.Text;
 
 namespace ECommerceAPI.Infrastructure.Services;
 public class MailService : IMailService {
@@ -11,20 +12,20 @@ public class MailService : IMailService {
         _configuration = configuration;
     }
 
-    public async Task SendMessageAsync(String to, String subject, String body) {
-        await SendMessageAsync(to, subject, body, true);
+    public async Task SendMailAsync(String to, String subject, String body) {
+        await SendMailAsync(to, subject, body, true);
     }
 
-    public async Task SendMessageAsync(String to, String subject, String body, Boolean isBodyHtml) {
-        await SendMessageAsync(new[] { to }, subject, body, isBodyHtml);
+    public async Task SendMailAsync(String to, String subject, String body, Boolean isBodyHtml) {
+        await SendMailAsync(new[] { to }, subject, body, isBodyHtml);
 
     }
 
-    public async Task SendMessageAsync(String[] tos, String subject, String body) {
-        await SendMessageAsync(tos, subject, body, true);
+    public async Task SendMailAsync(String[] tos, String subject, String body) {
+        await SendMailAsync(tos, subject, body, true);
     }
 
-    public async Task SendMessageAsync(String[] tos, String subject, String body, Boolean isBodyHtml) {
+    public async Task SendMailAsync(String[] tos, String subject, String body, Boolean isBodyHtml) {
         MailMessage mailMessage = new();
         mailMessage.IsBodyHtml = isBodyHtml;
 
@@ -44,5 +45,20 @@ public class MailService : IMailService {
         };
 
         await smtpClient.SendMailAsync(mailMessage);
+    }
+
+    public async Task SendPasswordResetMailAsync(String to, String userId, String resetToken) {
+
+        StringBuilder mail = new();
+        mail.AppendLine("Merhaba<br>Eğer yeni şifre talebinde bulunduysanız aşağıdaki linkten şifrenizi yenileyebilirsiniz.<br><strong><a target=\"_blank\" href=\"");
+        mail.AppendLine(_configuration["AngularClientUrl"]);
+        mail.AppendLine("/password-update/");
+        mail.AppendLine(userId);
+        mail.AppendLine("/");
+        mail.AppendLine(resetToken);
+        mail.AppendLine("\">");
+        mail.AppendLine("Yeni şifre talebi için tıklayınız</a></strong><br><br><span style=\"font-size:12px;\">Eğer talebiniz dışında gerçekleştirildiyse ciddiye almayınız.</span><br><br><br><br><br>E-Commerce");
+
+        await SendMailAsync(to, "Şifre Yenileme Talebi", mail.ToString());
     }
 }

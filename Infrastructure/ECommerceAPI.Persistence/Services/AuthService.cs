@@ -4,12 +4,15 @@ using ECommerceAPI.Application.DTOs;
 using ECommerceAPI.Application.DTOs.Facebook;
 using ECommerceAPI.Application.Exceptions;
 using ECommerceAPI.Application.Features.Commands.ApplicationUsers.LoginUser;
+using ECommerceAPI.Application.Helpers;
 using ECommerceAPI.Domain.Entities.Identity;
 using Google.Apis.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Text;
 using System.Text.Json;
 
 namespace ECommerceAPI.Persistence.Services;
@@ -20,19 +23,22 @@ public class AuthService : IAuthService {
     private readonly ITokenHandler _tokenHandler;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IUserService _userService;
+    private readonly IMailService _mailService;
 
     public AuthService(IHttpClientFactory httpClientFactory,
                        IConfiguration configuration,
                        UserManager<ApplicationUser> userManager,
                        ITokenHandler tokenHandler,
                        SignInManager<ApplicationUser> signInManager,
-                       IUserService userService) {
+                       IUserService userService,
+                       IMailService mailService) {
         _httpClient = httpClientFactory.CreateClient();
         _configuration = configuration;
         _userManager = userManager;
         _tokenHandler = tokenHandler;
         _signInManager = signInManager;
         _userService = userService;
+        _mailService = mailService;
     }
 
     private async Task<Token> CreateUserExternalAsync(ApplicationUser user, String email, String name, UserLoginInfo info) {
@@ -58,7 +64,7 @@ public class AuthService : IAuthService {
             await _userManager.AddLoginAsync(user, info); // ilgili tabloya geldiği dış kaynak özellikleri ile kaydediyoruz
 
             Token token = _tokenHandler.CreateAccessToken(user);
-            await _userService.UpdateRefreshToken(user, token.RefreshToken, token.Expiration, 300);
+            await _userService.UpdateRefreshTokenAsync(user, token.RefreshToken, token.Expiration, 300);
             return token;
         }
 
@@ -115,7 +121,7 @@ public class AuthService : IAuthService {
 
         if(result.Succeeded) { //Authentication başarılı olmuş oluyor
             Token token = _tokenHandler.CreateAccessToken(user);
-            await _userService.UpdateRefreshToken(user, token.RefreshToken, token.Expiration, 300);
+            await _userService.UpdateRefreshTokenAsync(user, token.RefreshToken, token.Expiration, 300);
             return token;
         }
 
@@ -130,10 +136,37 @@ public class AuthService : IAuthService {
 
         if(user is not null && user.RefreshTokenEndDate > DateTime.UtcNow) {
             Token token = _tokenHandler.CreateAccessToken(user);
-            await _userService.UpdateRefreshToken(user, token.RefreshToken, token.Expiration, 300);
+            await _userService.UpdateRefreshTokenAsync(user, token.RefreshToken, token.Expiration, 300);
             return token;
         }
 
         throw new NotFoundUserException();
+    }
+
+    public async Task PasswordResetAsync(String email) {
+        ApplicationUser user = await _userManager.FindByEmailAsync(email);
+
+        if(user is null)
+            return;
+
+        String resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+       resetToken= resetToken.UrlEncode();
+
+        await _mailService.SendPasswordResetMailAsync(email, user.Id, resetToken);
+
+    }
+
+    public async Task<(Boolean, String)> VerifyResetTokenAsync(String userId, String resetToken) {
+        ApplicationUser user = await _userManager.FindByIdAsync(userId);
+
+        if(user is null)
+            return (false, String.Empty);
+
+        resetToken = resetToken.UrlDecode();
+
+       Boolean state = await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", resetToken);
+
+        return (state, user.Email);
     }
 }
