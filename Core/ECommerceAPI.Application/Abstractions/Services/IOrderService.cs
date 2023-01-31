@@ -5,5 +5,5 @@ public interface IOrderService {
     Task CreateOrderAsync(CreateOrder createOrder);
     Task<ListOrder> GetAllOrdersAsync(Int32 page, Int32 size);
     Task<SingleOrder> GetByIdOrderAsync(Guid id);
-    Task CompleteOrderAsync(Guid id);
+    Task<(Boolean, CompletedOrderDto)> CompleteOrderAsync(Guid id);
 }

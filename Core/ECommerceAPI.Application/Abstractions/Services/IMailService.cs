@@ -6,4 +6,6 @@ public interface IMailService {
     Task SendMailAsync(String[] tos, String subject, String body, Boolean isBodyHtml);
 
     Task SendPasswordResetMailAsync(String to, String userId, String resetToken);
+
+    Task SendCompletedOrderMailAsync(String to,String userNameSurname, String orderCode, DateTime orderDate);
 }

@@ -81,18 +81,18 @@ public class OrderService : IOrderService {
                     .ThenInclude(basketItem => basketItem.Product);
 
         var data2 = await (from order in data
-                     join completedOrder in _complatedOrderReadRepository.Table
-                        on order.Id equals completedOrder.OrderId into co
-                     from _co in co.DefaultIfEmpty()
-                     select new {
-                         Id = order.Id,
-                         OrderCode = order.OrderCode,
-                         CreatedDate = order.CreatedDate,
-                         Basket = order.Basket,
-                         Completed = _co != null ? true : false,
-                         Address = order.Address,
-                         Description = order.Description,
-                     })
+                           join completedOrder in _complatedOrderReadRepository.Table
+                              on order.Id equals completedOrder.OrderId into co
+                           from _co in co.DefaultIfEmpty()
+                           select new {
+                               Id = order.Id,
+                               OrderCode = order.OrderCode,
+                               CreatedDate = order.CreatedDate,
+                               Basket = order.Basket,
+                               Completed = _co != null ? true : false,
+                               Address = order.Address,
+                               Description = order.Description,
+                           })
                     .FirstOrDefaultAsync(x => x.Id.Equals(id));
 
         return new() {
@@ -120,11 +120,23 @@ public class OrderService : IOrderService {
         return orderCode[1..^1];
     }
 
-    public async Task CompleteOrderAsync(Guid id) {
-        Order order = await _orderReadRepository.GetByIdAsync(id);
-        if(order is not null) {
-            await _complatedOrderWriteRepository.AddAsync(new() { OrderId = id });
-            await _complatedOrderWriteRepository.SaveAsync();
+    public async Task<(Boolean, CompletedOrderDto)> CompleteOrderAsync(Guid id) {
+        Order? order = await _orderReadRepository.Table.Include(order => order.Basket)
+            .ThenInclude(basket => basket.ApplicationUser)
+            .FirstOrDefaultAsync(order => order.Id.Equals(id));
+
+        if(order is null) {
+            throw new Exception("Order not found");
+            return (false, null);
         }
+
+        await _complatedOrderWriteRepository.AddAsync(new() { OrderId = id });
+        return (await _complatedOrderWriteRepository.SaveAsync() > 0, new() {
+            Email = order.Basket.ApplicationUser.Email,
+            UserNameSurname = order.Basket.ApplicationUser.NameSurname,
+            OrderCode = order.OrderCode,
+            OrderDate = order.CreatedDate,
+        });
+
     }
 }
