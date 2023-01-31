@@ -7,4 +7,5 @@ public class SingleOrder {
     public String Description { get; set; }
     public Object BasketItems { get; set; }
     public DateTime CreatedDate { get; set; }
+    public Boolean Completed { get; set; }
 }

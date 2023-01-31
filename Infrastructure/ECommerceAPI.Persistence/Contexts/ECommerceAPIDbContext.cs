@@ -20,6 +20,7 @@ public class ECommerceAPIDbContext : IdentityDbContext<ApplicationUser, Applicat
 
     public DbSet<Basket> Baskets { get; set; }
     public DbSet<BasketItem> BasketItems { get; set; }
+    public DbSet<CompletedOrder> CompletedOrders { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder) {
         builder.Entity<Order>().HasKey(x => x.Id);
@@ -33,6 +34,12 @@ public class ECommerceAPIDbContext : IdentityDbContext<ApplicationUser, Applicat
             .HasOne(x => x.Order)
             .WithOne(x => x.Basket)
             .HasForeignKey<Order>(x => x.Id);
+
+        builder.Entity<Order>()
+            .HasOne(x => x.CompletedOrder)
+            .WithOne(c => c.Order)
+            .HasForeignKey<CompletedOrder>(c => c.OrderId);
+
 
         base.OnModelCreating(builder);
     }

@@ -21,6 +21,7 @@ public class GetByIdOrderQueryHandler : IRequestHandler<GetByIdOrderQueryRequest
             Description = data.Description,
             BasketItems = data.BasketItems,
             CreatedDate = data.CreatedDate,
+            Completed = data.Completed,
         };
     }
 }
