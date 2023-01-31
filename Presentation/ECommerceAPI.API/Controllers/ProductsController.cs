@@ -1,4 +1,7 @@
 ﻿using ECommerceAPI.Application.Abstractions.Storage;
+using ECommerceAPI.Application.Consts;
+using ECommerceAPI.Application.CustomAttributes;
+using ECommerceAPI.Application.Enums;
 using ECommerceAPI.Application.Features.Commands.ProductImageFiles.ChangeImageShowcase;
 using ECommerceAPI.Application.Features.Commands.ProductImageFiles.DeleteProductImage;
 using ECommerceAPI.Application.Features.Commands.ProductImageFiles.UploadProductImage;
@@ -50,6 +53,11 @@ public class ProductsController : ControllerBase {
     
     [HttpPost]
     [Authorize(AuthenticationSchemes = "Admin")]
+    [AuthorizeDefinition(
+        Menu = AuthorizeDefinitionConstants.Products,
+        ActionType = ActionType.Writing,
+        Definition = "Create Product"
+        )]
     public async Task<IActionResult> Post(CreateProductCommandRequest createProductCommandRequest) {
         CreateProductCommandResponse response = await _mediator.Send(createProductCommandRequest);
         return StatusCode(StatusCodes.Status201Created/*, response*/);
@@ -57,6 +65,11 @@ public class ProductsController : ControllerBase {
 
     [HttpPut]
     [Authorize(AuthenticationSchemes = "Admin")]
+    [AuthorizeDefinition(
+        Menu = AuthorizeDefinitionConstants.Products,
+        ActionType = ActionType.Updating,
+        Definition = "Update Product"
+        )]
     public async Task<IActionResult> Put([FromBody] UpdateProductCommandRequest updateProductCommandRequest) {
         UpdateProductCommandResponse response = await _mediator.Send(updateProductCommandRequest);
         return Ok(response);
@@ -64,6 +77,11 @@ public class ProductsController : ControllerBase {
 
     [HttpDelete("{Id:Guid}")]
     [Authorize(AuthenticationSchemes = "Admin")]
+    [AuthorizeDefinition(
+        Menu = AuthorizeDefinitionConstants.Products,
+        ActionType = ActionType.Deleting,
+        Definition = "Delete Product"
+        )]
     public async Task<IActionResult> Delete([FromRoute] DeleteProductCommandRequest deleteProductCommandRequest) {
         DeleteProductCommandResponse response = await _mediator.Send(deleteProductCommandRequest);
         return Ok(response);
@@ -71,6 +89,11 @@ public class ProductsController : ControllerBase {
 
     [HttpPost("[action]")]
     [Authorize(AuthenticationSchemes = "Admin")]
+    [AuthorizeDefinition(
+        Menu = AuthorizeDefinitionConstants.Products,
+        ActionType = ActionType.Writing,
+        Definition = "Upload Product Image"
+        )]
     public async Task<IActionResult> Upload([FromQuery] UploadProductImageCommandRequest uploadProductImageCommandRequest) {
         uploadProductImageCommandRequest.FormFiles = Request.Form.Files;
         UploadProductImageCommandResponse response = await _mediator.Send(uploadProductImageCommandRequest);
@@ -79,6 +102,11 @@ public class ProductsController : ControllerBase {
 
     [HttpDelete("[action]/{Id:Guid}")]
     [Authorize(AuthenticationSchemes = "Admin")]
+    [AuthorizeDefinition(
+        Menu = AuthorizeDefinitionConstants.Products,
+        ActionType = ActionType.Deleting,
+        Definition = "Delete Product Image"
+        )]
     public async Task<IActionResult> DeleteProductImage([FromRoute] DeleteProductImageCommandRequest deleteProductImageCommandRequest, [FromQuery] Guid imageId) {
         deleteProductImageCommandRequest.ImageId = imageId;
         DeleteProductImageCommandResponse response = await _mediator.Send(deleteProductImageCommandRequest);
@@ -87,6 +115,11 @@ public class ProductsController : ControllerBase {
 
     [HttpGet("[action]/{Id:Guid}")]
     [Authorize(AuthenticationSchemes = "Admin")]
+    [AuthorizeDefinition(
+        Menu = AuthorizeDefinitionConstants.Products,
+        ActionType = ActionType.Reading,
+        Definition = "Get Product Images"
+        )]
     public async Task<IActionResult> GetProductImages([FromRoute] GetProductImagesQueryRequest getProductImagesQueryRequest) {
         List<GetProductImagesQueryResponse>? response = await _mediator.Send(getProductImagesQueryRequest);
         return Ok(response);
@@ -95,6 +128,11 @@ public class ProductsController : ControllerBase {
     //[HttpGet("[action]/{imageId:Guid}/{productId:Guid}")]
     [HttpGet("[action]")]
     [Authorize(AuthenticationSchemes = "Admin")]
+    [AuthorizeDefinition(
+        Menu = AuthorizeDefinitionConstants.Products,
+        ActionType = ActionType.Updating,
+        Definition = "Change Product Showcase Image"
+        )]
     public async Task<IActionResult> ChangeImageShowcase([FromQuery] ChangeImageShowcaseCommandRequest changeImageShowcaseCommandRequest) {
         ChangeImageShowcaseCommandResponse response = await _mediator.Send(changeImageShowcaseCommandRequest);
         

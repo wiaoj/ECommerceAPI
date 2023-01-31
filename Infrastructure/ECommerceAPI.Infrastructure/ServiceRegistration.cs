@@ -1,8 +1,10 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
+using ECommerceAPI.Application.Abstractions.Services.Configurations;
 using ECommerceAPI.Application.Abstractions.Storage;
 using ECommerceAPI.Application.Abstractions.Token;
 using ECommerceAPI.Infrastructure.Enums;
 using ECommerceAPI.Infrastructure.Services;
+using ECommerceAPI.Infrastructure.Services.Configurations;
 using ECommerceAPI.Infrastructure.Services.Storage;
 using ECommerceAPI.Infrastructure.Services.Storage.Azure;
 using ECommerceAPI.Infrastructure.Services.Storage.Local;
@@ -16,6 +18,7 @@ public static class ServiceRegistration {
         services.AddStorage<LocalStorage>();
         services.AddScoped<ITokenHandler, TokenHandler>();
         services.AddScoped<IMailService, MailService>();
+        services.AddScoped<IApplicationService, ApplicationService>();
     }
 
     public static void AddStorage<StorageType>(this IServiceCollection services) where StorageType : Storage, IStorage {
