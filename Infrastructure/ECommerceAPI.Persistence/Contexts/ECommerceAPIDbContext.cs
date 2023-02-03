@@ -22,6 +22,9 @@ public class ECommerceAPIDbContext : IdentityDbContext<ApplicationUser, Applicat
     public DbSet<BasketItem> BasketItems { get; set; }
     public DbSet<CompletedOrder> CompletedOrders { get; set; }
 
+    public DbSet<MenuEndpoint> MenuEndpoints { get; set; }
+    public DbSet<Endpoint> Endpoints { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder) {
         builder.Entity<Order>().HasKey(x => x.Id);
 

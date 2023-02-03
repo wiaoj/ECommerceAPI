@@ -5,4 +5,5 @@ public static class AuthorizeDefinitionConstants {
     public const String Products = "Products";
     public const String ApplicationServices = "Application Services";
     public const String Roles = "Roles";
+    public const String Users = "Users";
 }
