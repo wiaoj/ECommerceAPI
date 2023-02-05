@@ -26,12 +26,12 @@ public class RoleService : IRoleService {
 
     public async Task<(IDictionary<String, String>, Int32)> GetAllRoles(Int32 page, Int32 size) {
         IQueryable<ApplicationRole>? query = _roleManager.Roles;
-
+        Int32 count = await query.CountAsync();
         query = page is -1 && size is -1
                     ? query
                     : query.Skip(page * size).Take(size);
 
-        return (await query.ToDictionaryAsync(role => role.Id, role => role.Name), await query.CountAsync());
+        return (await query.ToDictionaryAsync(role => role.Id, role => role.Name), count);
     }
 
     public async Task<(String id, String name)> GetRoleById(String id) {

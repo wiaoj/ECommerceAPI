@@ -9,5 +9,6 @@ public interface IUserService {
     Task<List<ListUser>> GetAllUsersAsync(Int32 page, Int32 size);
     Int32 TotalUsersCount { get; }
     Task AssignRoleToUserAsync(String id, String[] roles);
-    Task<String[]> GetRolesToUserAsync(String id);
+    Task<String[]> GetRolesToUserAsync(String idOrUsername);
+    Task<Boolean> HasRolePermissionToEndpointAsync(String username, String code);
 }
