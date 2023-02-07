@@ -1,4 +1,4 @@
-﻿using ECommerceAPI.Application.Abstractions.Storage;
+﻿using ECommerceAPI.Application.Abstractions.Services;
 using ECommerceAPI.Application.Consts;
 using ECommerceAPI.Application.CustomAttributes;
 using ECommerceAPI.Application.Enums;
@@ -11,8 +11,6 @@ using ECommerceAPI.Application.Features.Commands.Products.UpdateProduct;
 using ECommerceAPI.Application.Features.Queries.ProductImageFiles.GetProductImages;
 using ECommerceAPI.Application.Features.Queries.Products.GetAllProduct;
 using ECommerceAPI.Application.Features.Queries.Products.GetByIdProduct;
-using ECommerceAPI.Application.Repositories.FileRepositories.ProductImageFiles;
-using ECommerceAPI.Application.Repositories.Products;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,27 +19,25 @@ namespace ECommerceAPI.API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class ProductsController : ControllerBase {
-    private readonly IProductWriteRepository _productWriteRepository;
-    private readonly IProductReadRepository _productReadRepository;
-    private readonly IStorageService _storageService;
-    private readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
-    private readonly IConfiguration _configuration;
 
     private readonly IMediator _mediator;
+    private readonly IProductService _productService;
 
-    public ProductsController(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, IStorageService storageService, IProductImageFileWriteRepository productImageFileWriteRepository, IConfiguration configuration, IMediator mediator) {
-        _productWriteRepository = productWriteRepository;
-        _productReadRepository = productReadRepository;
-        _storageService = storageService;
-        _productImageFileWriteRepository = productImageFileWriteRepository;
-        _configuration = configuration;
+    public ProductsController(IMediator mediator, IProductService productService) {
         _mediator = mediator;
+        _productService = productService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] GetAllProductQueryRequest getAllProductQueryRequest) {
         GetAllProductQueryResponse response = await _mediator.Send(getAllProductQueryRequest);
         return Ok(response);
+    }
+
+    [HttpGet("qrcode/{productId}")]
+    public async Task<IActionResult> GetQrCodeToProduct([FromRoute] Guid productId) {
+        var data = await _productService.QrCodeToProductAsync(productId);
+        return File(data, "image/png");
     }
 
     [HttpGet("getById/{Id:Guid}")]
