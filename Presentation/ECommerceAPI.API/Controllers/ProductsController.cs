@@ -1,4 +1,5 @@
-﻿using ECommerceAPI.Application.Abstractions.Services;
+﻿using Azure;
+using ECommerceAPI.Application.Abstractions.Services;
 using ECommerceAPI.Application.Consts;
 using ECommerceAPI.Application.CustomAttributes;
 using ECommerceAPI.Application.Enums;
@@ -8,6 +9,7 @@ using ECommerceAPI.Application.Features.Commands.ProductImageFiles.UploadProduct
 using ECommerceAPI.Application.Features.Commands.Products.CreateProduct;
 using ECommerceAPI.Application.Features.Commands.Products.DeleteProduct;
 using ECommerceAPI.Application.Features.Commands.Products.UpdateProduct;
+using ECommerceAPI.Application.Features.Commands.Products.UpdateStockQrCodeToProduct;
 using ECommerceAPI.Application.Features.Queries.ProductImageFiles.GetProductImages;
 using ECommerceAPI.Application.Features.Queries.Products.GetAllProduct;
 using ECommerceAPI.Application.Features.Queries.Products.GetByIdProduct;
@@ -40,13 +42,19 @@ public class ProductsController : ControllerBase {
         return File(data, "image/png");
     }
 
+    [HttpPut("qrcode")]
+    public async Task<IActionResult> UpdateStockQrCodeToProduct([FromBody] UpdateStockQrCodeToProductRequest request) {
+        UpdateStockQrCodeToProductResponse response = await _mediator.Send(request);
+        return Ok(response);
+    }
+
     [HttpGet("getById/{Id:Guid}")]
     public async Task<IActionResult> GetById([FromRoute] GetByIdProductQeuryRequest byIdProductQeuryRequest) {
         GetByIdProductQeuryResponse response = await _mediator.Send(byIdProductQeuryRequest);
         return Ok(response);
     }
 
-    
+
     [HttpPost]
     [Authorize(AuthenticationSchemes = "Admin")]
     [AuthorizeDefinition(
@@ -131,7 +139,7 @@ public class ProductsController : ControllerBase {
         )]
     public async Task<IActionResult> ChangeImageShowcase([FromQuery] ChangeImageShowcaseCommandRequest changeImageShowcaseCommandRequest) {
         ChangeImageShowcaseCommandResponse response = await _mediator.Send(changeImageShowcaseCommandRequest);
-        
+
         return Ok(response);
     }
 }
