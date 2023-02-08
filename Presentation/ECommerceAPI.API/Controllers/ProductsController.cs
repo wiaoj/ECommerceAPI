@@ -43,8 +43,8 @@ public class ProductsController : ControllerBase {
     }
 
     [HttpPut("qrcode")]
-    public async Task<IActionResult> UpdateStockQrCodeToProduct([FromBody] UpdateStockQrCodeToProductRequest request) {
-        UpdateStockQrCodeToProductResponse response = await _mediator.Send(request);
+    public async Task<IActionResult> UpdateStockQrCodeToProduct([FromBody] UpdateStockQrCodeToProductCommandRequest request) {
+        UpdateStockQrCodeToProductCommandResponse response = await _mediator.Send(request);
         return Ok(response);
     }
 
